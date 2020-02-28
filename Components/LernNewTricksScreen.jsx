@@ -1,107 +1,134 @@
 import React from "react";
-import {Button, View} from 'react-native';
-import {CheckBox, ListItem} from "react-native-elements";
-import {color} from "react-native-reanimated";
+import {Picker, TextInput, View} from 'react-native';
+import {ListItem} from "react-native-elements";
 import DateHelper from "../Helpers/DateHelper";
+import Icon from 'react-native-vector-icons/Ionicons';
+import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
+import {DBHelper} from "../Helpers/DBHelper";
 
 export default class LearnNewTricksScreen extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {tricks: [], checkedTricks: []}
+        this.state = {tricks: [], checkedTricks: [], newTrickName: "", newTrickSteeze: 1}
     }
 
-    componentDidMount = () => {
-        //Read Tricks here
-        const tricks = [
-            {
-                id: 1,
-                name: "Ollie North",
-                steeze: 1,
-                since: "2020-02-02",
-            },
-            {
-                id: 2,
-                name: "Varial Flip",
-                steeze: 2,
-                since: "2020-01-02"
-            },
-            {
-                id: 3,
-                name: "Tre Flip",
-                steeze: 3,
-                since: "2020-02-20"
+    componentDidMount = async () => {
 
-            },
-            {
-                id: 4,
-                name: "Lazer Flip",
-                steeze: 3,
-                since: "2019-10-13"
-            },
-            {
-                id: 5,
-                name: "Boardslide",
-                steeze: 2,
-                since: "2019-12-30"
-            },
-        ];
+        //Read Tricks here
+        const tricks = await DBHelper.getLearnTrickList();
         this.setState({tricks: tricks})
     };
 
-    static navigationOptions = {
-        headerTitle: 'Learn new Tricks',
+    static navigationOptions = ({navigation}) => {
+        return {
+            headerTitle: 'Learn new Tricks',
+            headerLeft: () => <Icon name={"ios-menu"} style={{paddingLeft: 10}} size={35} color="grey"
+                                    onPress={() => navigation.openDrawer()}/>
+        }
     };
 
     getListItems = () => {
-        let listItems = this.state.tricks.map(trick => {
+        return this.state.tricks.map(trick => {
             return (
                 <ListItem key={trick.id}
                           title={trick.name}
                           rightTitle={"Steeze: " + trick.steeze}
+                          onPress={() => this.handleTrickSelected(trick)}
                           subtitle={DateHelper.getDurationSinceDate(trick.since)}
                           subtitleStyle={{color: "grey"}}
-                          checkBox={() => {
-                              return <CheckBox checked={this.state.checkedTricks.includes(trick.id)} onPress={() => {
-                                  let checkedTricks = this.state.checkedTricks;
-                                  checkedTricks.push(trick.id);
-                                  this.setState({checkedTricks: checkedTricks});
-                              }}/>
+                          checkBox={{
+                              checked: this.state.checkedTricks.includes(trick.id),
+                              onPress: () => this.handleTrickSelected(trick),
+                              checkedColor: "green",
+                              uncheckedIcon: "circle-o",
+                              checkedIcon: "check-circle-o"
                           }}
                           bottomDivider
                 />
             );
         });
-        listItems.push(<ListItem key={Math.floor(Math.random() * 10000) + 1}
-                                 leftIcon={
-                                     <Button title={"New Trick"}
-                                             onPress={() => this.addTrick()}
-                                             bottomDivider
-                                     />}
-        />);
-        return listItems;
     };
 
-    addTrick = () => {
-        let newTrick = {
-            id: this.state.tricks.length + 1,
-            name: "Trick " + (this.state.tricks.length + 1),
-            since: new Date(),
-            steeze: Math.floor(Math.random() * 3) + 1
-        };
+    handleTrickSelected = (trick) => {
+        let checkedTricks = [...this.state.checkedTricks];
+
+        if (!checkedTricks.includes(trick.id)) {
+            checkedTricks.push(trick.id);
+        } else {
+            let index = checkedTricks.findIndex(t => t === trick.id);
+            checkedTricks.splice(index, 1);
+        }
+        this.setState({checkedTricks: checkedTricks});
+    };
+
+    handleDeleteTricks = () => {
+        //TODO: Delete Tricks from Firestore
         let tricks = this.state.tricks;
-        tricks.push(newTrick);
-        this.setState({tricks: tricks})
+        let checkedTricks = [...this.state.checkedTricks];
+        let updatedTrickList = tricks.filter(trick => !checkedTricks.includes(trick.id));
+
+        checkedTricks.forEach(t => {
+            DBHelper.deleteTrickFromLearnTrickList(t).then(() => console.log("deleted ", t)).catch(() => console.log("fehler..."))
+        });
+
+        this.setState({tricks: updatedTrickList, checkedTricks: []});
     };
 
+    addTrick = async (e) => {
+        if (e && e.nativeEvent.text !== "") {
+            let newTrick = {
+                id: Math.floor(Math.random() * 100000) + 1,
+                name: e.nativeEvent.text,
+                since: new Date(),
+                steeze: this.state.newTrickSteeze
+            };
+            let tricks = await DBHelper.insertNewLearnTrick(newTrick);
+            this.setState({tricks: tricks, newTrickSteeze: 1})
+        }
+    };
+
+    getJSXSteezePicker = () => {
+        return <View><Picker
+            onValueChange={(value) => this.setState({newTrickSteeze: value})}
+            selectedValue={this.state.newTrickSteeze}
+            itemStyle={{height: 100, width: 100}}
+        >
+            <Picker.Item key={1} label={"1"} value={1}/>
+            <Picker.Item key={2} label={"2"} value={2}/>
+            <Picker.Item key={3} label={"3"} value={3}/>
+        </Picker></View>
+    };
 
     render() {
         let {navigate} = this.props.navigation;
         let listItems = this.getListItems();
         return (
-            <View>
-                {listItems}
-            </View>
+            <KeyboardAwareScrollView>
+                <View>
+                    {this.state.tricks.length > 0 && listItems}
+                    {this.state.checkedTricks.length === 0 &&
+                    <ListItem key={Math.floor(Math.random() * 10000) + 1}
+                              rightElement={() => this.getJSXSteezePicker()}
+                              titleStyle={{color: "grey", fontSize: 25}}
+                              leftIcon={<Icon name="ios-add" size={50} color={"grey"}/>}
+                              onPress={() => this.addTrick()}
+                              title={<TextInput onEndEditing={(e) => this.addTrick(e)}
+                                                placeholder={"Add a trick..."}
+                                                style={{padding: 20}}
+                              />}
+                    />
+                    }
+                    {this.state.checkedTricks.length > 0 &&
+                    <ListItem leftIcon={<Icon name="ios-checkmark" size={50} color="white"/>}
+                              onPress={() => this.handleDeleteTricks()}
+                              title={"Trick is completed"}
+                              titleStyle={{color: "white", fontSize: 25}}
+                              containerStyle={{backgroundColor: "green"}}
+                    />}
+                </View>
+            </KeyboardAwareScrollView>
+
         );
     }
 }
