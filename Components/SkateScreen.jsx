@@ -1,6 +1,7 @@
 import React from "react";
-import {Button, StyleSheet, View, KeyboardAvoidingView, Text} from 'react-native';
-import {Input} from "react-native-elements";
+import {KeyboardAvoidingView, StyleSheet, Text, View} from 'react-native';
+import {Button, Input} from "react-native-elements";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default class SkateScreen extends React.Component {
 
@@ -14,8 +15,15 @@ export default class SkateScreen extends React.Component {
         }
     }
 
-    static navigationOptions = {
-        headerTitle: 'Game of Skate',
+    static navigationOptions = ({navigation}) => {
+        return {
+            headerTitle: 'Game of Skate',
+            headerLeft: () => <Icon name={"ios-menu"}
+                                    style={{paddingLeft: 10}}
+                                    size={35} color="grey"
+                                    onPress={() => navigation.openDrawer()}
+            />
+        }
     };
 
     startGame = () => {
@@ -64,7 +72,7 @@ export default class SkateScreen extends React.Component {
                     </View>
                     {this.state.error && <Text style={styles.error}>{this.state.error}</Text>}
                     <View>
-                        <Button title={"Start Game"} onPress={() => this.startGame()}/>
+                        <Button style={styles.button} title={"Start Game"} onPress={() => this.startGame()}/>
                     </View>
                 </View>
             </KeyboardAvoidingView>
@@ -82,4 +90,8 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20
     },
+    button: {
+        marginLeft: 20,
+        marginRight: 20
+    }
 });

@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, ScrollView, Text, View} from 'react-native';
+import {ScrollView, Text, View} from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import {ListItem} from "react-native-elements";
 import DateHelper from "../Helpers/DateHelper";
@@ -30,7 +30,6 @@ export default class MyTricksScreen extends React.Component {
         'didFocus',
         payload => {
             DBHelper.getMyTricks().then((tricks) => this.setState({tricks: tricks}));
-
         }
     );
 

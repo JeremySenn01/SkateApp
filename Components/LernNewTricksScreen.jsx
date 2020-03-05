@@ -5,6 +5,7 @@ import DateHelper from "../Helpers/DateHelper";
 import Icon from 'react-native-vector-icons/Ionicons';
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import {DBHelper} from "../Helpers/DBHelper";
+import moment from "moment";
 
 export default class LearnNewTricksScreen extends React.Component {
 
@@ -63,26 +64,31 @@ export default class LearnNewTricksScreen extends React.Component {
     };
 
     handleDeleteTricks = () => {
-        //TODO: Delete Tricks from Firestore
         let tricks = this.state.tricks;
         let checkedTricks = [...this.state.checkedTricks];
         let updatedTrickList = tricks.filter(trick => !checkedTricks.includes(trick.id));
 
         checkedTricks.forEach(t => {
-            DBHelper.deleteTrickFromLearnTrickList(t).then(() => console.log("deleted ", t)).catch(() => console.log("fehler..."))
+            let trick = tricks.filter(trick => trick.id === t)[0];
+            DBHelper.deleteTrickFromLearnTrickList(t).then(() => console.log("deleted ", t)).catch(() => console.log("fehler..."));
+            // let insertTrick = {...trick, clips: [{uri: ""}]};
+            // console.log("insert trick: ", insertTrick);
+            DBHelper.insertIntoMyTricks(trick).then(p => console.log("inserted..."));
         });
 
         this.setState({tricks: updatedTrickList, checkedTricks: []});
     };
 
     addTrick = async (e) => {
+
         if (e && e.nativeEvent.text !== "") {
             let newTrick = {
                 id: Math.floor(Math.random() * 100000) + 1,
                 name: e.nativeEvent.text,
-                since: new Date(),
+                since: new Date().toISOString(),
                 steeze: this.state.newTrickSteeze
             };
+            console.log("new Trick: ", newTrick);
             let tricks = await DBHelper.insertNewLearnTrick(newTrick);
             this.setState({tricks: tricks, newTrickSteeze: 1})
         }
