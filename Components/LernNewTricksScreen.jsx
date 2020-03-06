@@ -5,7 +5,6 @@ import DateHelper from "../Helpers/DateHelper";
 import Icon from 'react-native-vector-icons/Ionicons';
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import {DBHelper} from "../Helpers/DBHelper";
-import moment from "moment";
 
 export default class LearnNewTricksScreen extends React.Component {
 

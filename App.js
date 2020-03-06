@@ -8,6 +8,7 @@ import MyTricksScreen from "./Components/MyTricksScreen";
 import {createDrawerNavigator} from "react-navigation-drawer";
 import TrickScreen from "./Components/TrickScreen";
 import SkateGameScreen from "./Components/SkateGameScreen";
+import LoginScreen from "./Components/LoginScreen";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -20,6 +21,15 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
 }
+
+const getInitialRoute = () => {
+    return firebase.auth().currentUser ? "LearnNewTricks" : "Login"
+};
+
+const LoginStack = createStackNavigator({
+    Login: LoginScreen
+});
+
 const SkateStack = createStackNavigator({
     SkateHome: SkateScreen,
     SkateGame: SkateGameScreen
@@ -35,7 +45,7 @@ const MyTricksStack = createStackNavigator({
 });
 
 const DrawerNavigator = createDrawerNavigator({
-    LearnNewTicks: {
+    LearnNewTricks: {
         screen: LearnNewTricksStack,
         navigationOptions: {
             title: "Learn new tricks"
@@ -53,7 +63,8 @@ const DrawerNavigator = createDrawerNavigator({
             title: "S.k.a.t.e"
         },
     },
-});
+    Login: LoginStack
+}, {initialRouteName: getInitialRoute()});
 
 const AppContainer = createAppContainer(DrawerNavigator);
 
