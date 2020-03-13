@@ -1,5 +1,5 @@
 import React from "react";
-import {ScrollView, Text, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import Icon from "react-native-vector-icons/Ionicons";
 import {ListItem} from "react-native-elements";
 import DateHelper from "../Helpers/DateHelper";
@@ -28,7 +28,7 @@ export default class MyTricksScreen extends React.Component {
 
     didFocusSubscription = this.props.navigation.addListener(
         'didFocus',
-        payload => {
+        () => {
             DBHelper.getMyTricks().then((tricks) => this.setState({tricks: tricks}));
         }
     );
@@ -38,7 +38,6 @@ export default class MyTricksScreen extends React.Component {
         return this.state.tricks.map(trick => {
             return (
                 <ListItem key={trick.id}
-                          leftElement={<Text>(vid)</Text>}
                           rightSubtitle={"steeze: " + trick.steeze}
                           title={trick.name}
                           subtitle={DateHelper.getDurationSinceDate(trick.since)}
@@ -52,7 +51,6 @@ export default class MyTricksScreen extends React.Component {
     };
 
     render() {
-        let {navigate} = this.props.navigation;
         let listItems = this.getListItems();
         return (
             <View>

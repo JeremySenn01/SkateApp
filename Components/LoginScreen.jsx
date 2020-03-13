@@ -94,6 +94,7 @@ export default class LoginScreen extends React.Component {
                         style={{marginBottom: 20}}
                         placeholder='Password'
                         label="Your password"
+                        textContentType={"password"}
                         errorMessage={this.state.passwordError}
                         leftIcon={
                             <Icon
