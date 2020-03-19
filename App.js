@@ -9,6 +9,8 @@ import {createDrawerNavigator} from "react-navigation-drawer";
 import TrickScreen from "./Components/TrickScreen";
 import SkateGameScreen from "./Components/SkateGameScreen";
 import LoginScreen from "./Components/LoginScreen";
+import SettingsScreen from "./Components/SettingsScreen";
+import YoutubeScreen from "./Components/YoutubeScreen";
 
 // Initialize Firebase
 const firebaseConfig = {
@@ -36,7 +38,9 @@ const SkateStack = createStackNavigator({
 });
 
 const LearnNewTricksStack = createStackNavigator({
-    LearnTricks: LearnNewTricksScreen
+    LearnTricks: LearnNewTricksScreen,
+    Youtube: YoutubeScreen,
+    Settings: SettingsScreen
 });
 
 const MyTricksStack = createStackNavigator({

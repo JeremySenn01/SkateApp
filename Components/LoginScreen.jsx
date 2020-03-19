@@ -9,8 +9,8 @@ export default class LoginScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: "",
-            password: "",
+            email: "test.test@hotmail.com",
+            password: "123456",
             emailError: "",
             passwordError: "",
             loginError: ""
@@ -74,38 +74,41 @@ export default class LoginScreen extends React.Component {
         return (
             <View style={styles.loginContainer}>
                 <View>
-                    <Input
-                        style={{marginBottom: 20}}
-                        placeholder='email@address.com'
-                        label="Your email address"
-                        errorMessage={this.state.emailError}
-                        keyboardType={"email-address"}
-                        leftIcon={
-                            <Icon
-                                name='ios-mail'
-                                size={24}
-                                color='black'
-                            />
-                        }
-                        leftIconContainerStyle={{marginRight: 15}}
-                        onChangeText={(value) => this.setState({email: value})}
-                    />
-                    <Input
-                        style={{marginBottom: 20}}
-                        placeholder='Password'
-                        label="Your password"
-                        textContentType={"password"}
-                        errorMessage={this.state.passwordError}
-                        leftIcon={
-                            <Icon
-                                name='ios-lock'
-                                size={24}
-                                color='black'
-                            />
-                        }
-                        leftIconContainerStyle={{marginRight: 15}}
-                        onChangeText={(value) => this.setState({password: value})}
-                    />
+                    <View>
+
+                        <Input
+                            placeholder='email@address.com'
+                            label="Your email address"
+                            errorMessage={this.state.emailError}
+                            keyboardType={"email-address"}
+                            leftIcon={
+                                <Icon
+                                    name='ios-mail'
+                                    size={24}
+                                    color='black'
+                                />
+                            }
+                            leftIconContainerStyle={{marginRight: 15}}
+                            onChangeText={(value) => this.setState({email: value})}
+                        />
+                    </View>
+                    <View style={{marginTop: 20}}>
+                        <Input
+                            placeholder='Password'
+                            label="Your password"
+                            textContentType={"password"}
+                            errorMessage={this.state.passwordError}
+                            leftIcon={
+                                <Icon
+                                    name='ios-lock'
+                                    size={24}
+                                    color='black'
+                                />
+                            }
+                            leftIconContainerStyle={{marginRight: 15}}
+                            onChangeText={(value) => this.setState({password: value})}
+                        />
+                    </View>
                     <Text style={styles.errorText}>{this.state.loginError}</Text>
                 </View>
                 <View>

@@ -1,6 +1,6 @@
 import React from "react";
 import {Picker, TextInput, View} from 'react-native';
-import {ListItem} from "react-native-elements";
+import {CheckBox, ListItem} from "react-native-elements";
 import DateHelper from "../Helpers/DateHelper";
 import Icon from 'react-native-vector-icons/Ionicons';
 import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
@@ -29,22 +29,26 @@ export default class LearnNewTricksScreen extends React.Component {
     };
 
     getListItems = () => {
+        const {navigate} = this.props.navigation;
         return this.state.tricks.map(trick => {
             return (
                 <ListItem key={trick.id}
                           title={trick.name}
                           rightTitle={"Steeze: " + trick.steeze}
-                          onPress={() => this.handleTrickSelected(trick)}
                           subtitle={DateHelper.getDurationSinceDate(trick.since)}
                           subtitleStyle={{color: "grey"}}
-                          checkBox={{
-                              checked: this.state.checkedTricks.includes(trick.id),
-                              onPress: () => this.handleTrickSelected(trick),
-                              checkedColor: "green",
-                              uncheckedIcon: "circle-o",
-                              checkedIcon: "check-circle-o"
-                          }}
+                          chevron
                           bottomDivider
+                          leftElement={<CheckBox checked={this.state.checkedTricks.includes(trick.id)}
+                                                 onPress={() => this.handleTrickSelected(trick)}
+                                                 checkedColor={"green"}
+                                                 uncheckedIcon={"circle-o"}
+                                                 checkedIcon={"check-circle-o"}
+                          />}
+                          onPress={() => {
+                              navigate("Youtube", {trick})
+                          }}
+
                 />
             );
         });
@@ -72,7 +76,7 @@ export default class LearnNewTricksScreen extends React.Component {
             DBHelper.deleteTrickFromLearnTrickList(t).then(() => console.log("deleted ", t)).catch(() => console.log("fehler..."));
             // let insertTrick = {...trick, clips: [{uri: ""}]};
             // console.log("insert trick: ", insertTrick);
-            DBHelper.insertIntoMyTricks(trick).then(p => console.log("inserted..."));
+            DBHelper.insertIntoMyTricks(trick).then(() => console.log("inserted..."));
         });
 
         this.setState({tricks: updatedTrickList, checkedTricks: []});

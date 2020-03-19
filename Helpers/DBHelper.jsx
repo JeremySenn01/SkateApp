@@ -36,4 +36,24 @@ export class DBHelper {
             return []
         });
     }
+
+    static getSettings() {
+        return firebase.database().ref(firebase.auth().currentUser.uid + "/settings").once("value").then(snapshot => {
+            if (snapshot !== null && snapshot.val() !== null) {
+                return snapshot.val()
+            }
+            return null;
+        }).catch(error => {
+            console.log("Couldn't get Settings: ", error);
+        })
+    }
+
+    static saveSettings(settings) {
+        console.log("saving settings: ", settings);
+        return firebase.database().ref(firebase.auth().currentUser.uid + "/settings").set(settings).then(r => console.log("saved settings.", r));
+    }
+
+    static deleteSettings() {
+        return firebase.database().ref(firebase.auth().currentUser.uid + "/settings").remove();
+    }
 }
