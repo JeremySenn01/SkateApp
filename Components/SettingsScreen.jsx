@@ -17,7 +17,7 @@ export default class SettingsScreen extends React.Component {
         };
     }
 
-    static navigationOptions = ({navigation}) => {
+    static navigationOptions = () => {
         return {
             headerTitle: "Settings"
         }
@@ -54,8 +54,8 @@ export default class SettingsScreen extends React.Component {
                                   itemStyle={{height: 100, width: 150}}
                               >
                                   {options.map(item => <Picker.Item key={item.key}
-                                                                                      label={item.label}
-                                                                                      value={item.key}/>)}
+                                                                    label={item.label}
+                                                                    value={item.key}/>)}
                               </Picker>}
                               leftIcon={<Icon name={"ios-funnel"} size={30}/>}
                               bottomDivider
@@ -66,7 +66,7 @@ export default class SettingsScreen extends React.Component {
                     <ListItem title={"Safe Search"}
                               subtitle={"hide restricted content"}
                               rightElement={<Switch value={this.state.settings.safeSearch}
-                                                    onValueChange={(val) => this.setState({safeSearch: val})}
+                                                    onValueChange={(val) => this.setState({...this.state.settings.safeSearch = val})}
                               />}
                               leftIcon={<Icon name={"ios-search"} size={30}/>}
                               bottomDivider

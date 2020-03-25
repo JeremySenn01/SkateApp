@@ -36,13 +36,13 @@ export default class YoutubeScreen extends React.Component {
     };
 
     subscribe = this.props.navigation.addListener('didFocus', () => {
-            this.setState({isLoading: true});
-            //Get Settings From DB
-            this.getSettingsFromDB()
-                //Trigger Youtube search
-                .then(() => {
-                    this.handleSearchVideos()
-                })
+        this.setState({isLoading: true});
+        //Get Settings From DB
+        this.getSettingsFromDB()
+            //Trigger Youtube search
+            .then(() => {
+                this.handleSearchVideos()
+            })
     });
 
     getSettingsFromDB = async () => {
