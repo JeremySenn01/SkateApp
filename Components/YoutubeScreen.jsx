@@ -1,5 +1,5 @@
 import React from "react";
-import {ActivityIndicator, ScrollView, Text, View, StyleSheet} from 'react-native';
+import {ActivityIndicator, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {DBHelper} from "../Helpers/DBHelper";
 import SettingsHelper from "../Helpers/SettingsHelper";

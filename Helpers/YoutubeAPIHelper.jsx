@@ -10,8 +10,4 @@ export default class YoutubeAPIHelper {
         return fetch(url)
             .then(response => response.json())
     };
-
-    // static fetchVideosByVideoIds = (idList) => {
-    //
-    // }
-}
+    }
